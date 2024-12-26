@@ -1,0 +1,143 @@
+[gd_scene load_steps=15 format=3 uid="uid://85or8s2s5j1f"]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_qlogv"]
+[ext_resource type="PackedScene" uid="uid://dpn7vus6exxia" path="res://scenes/ball.tscn" id="1_tpck1"]
+[ext_resource type="PackedScene" uid="uid://cbvjuvfb6p7ag" path="res://scenes/player.tscn" id="2_spe5x"]
+[ext_resource type="Shader" path="res://scenes/bg.gdshader" id="3_221hp"]
+[ext_resource type="PackedScene" uid="uid://p22txxhmqukl" path="res://scenes/opponent.tscn" id="4_jr8oo"]
+[ext_resource type="Texture2D" uid="uid://c4gytlvtp3gi2" path="res://assets/dots.png" id="5_e0on6"]
+[ext_resource type="AudioStream" uid="uid://08vtqf63gwqn" path="res://assets/score_sound.ogg" id="7_bfelm"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bgd07"]
+shader = ExtResource("3_221hp")
+shader_parameter/dark_color = Color(0.0823529, 0.0666667, 0.129412, 1)
+shader_parameter/accent_color = Color(0.123735, 0.103405, 0.184802, 1)
+shader_parameter/vignette_intensity = 0.4
+shader_parameter/vignette_opacity = 0.5
+
+[sub_resource type="LabelSettings" id="LabelSettings_gcxh1"]
+font_size = 226
+font_color = Color(0.223529, 0.247059, 0.498039, 0.392157)
+
+[sub_resource type="LabelSettings" id="LabelSettings_1yqlr"]
+font_size = 226
+font_color = Color(0.223529, 0.247059, 0.498039, 0.392157)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_hq1uo"]
+normal = Vector2(0, 1)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_0lcdv"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_0uv66"]
+normal = Vector2(1, 0)
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_mcwk0"]
+normal = Vector2(-1, 0)
+
+[node name="Main" type="Node" node_paths=PackedStringArray("score_sound", "left_paddle", "right_paddle", "left_score_label", "right_score_label", "left_goal", "right_goal")]
+script = ExtResource("1_qlogv")
+ball_scene = ExtResource("1_tpck1")
+score_sound = NodePath("AudioStreamPlayer")
+left_paddle = NodePath("Player")
+right_paddle = NodePath("Opponent")
+left_score_label = NodePath("UI/HBoxContainer/LeftScoreLabel")
+right_score_label = NodePath("UI/HBoxContainer/RightScoreLabel")
+left_goal = NodePath("LeftGoal")
+right_goal = NodePath("RightGoal")
+delay_to_spawn = 0.1
+delay_to_start = 0.5
+
+[node name="Background" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_bgd07")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0823529, 0.0666667, 0.129412, 1)
+
+[node name="TextureRect" type="TextureRect" parent="."]
+texture_filter = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_right = 8.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_e0on6")
+expand_mode = 4
+stretch_mode = 1
+
+[node name="UI" type="MarginContainer" parent="."]
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 312.0
+offset_right = -328.0
+offset_bottom = 381.0
+grow_horizontal = 2
+theme_override_constants/margin_left = 36
+theme_override_constants/margin_top = 36
+theme_override_constants/margin_right = 36
+theme_override_constants/margin_bottom = 36
+
+[node name="HBoxContainer" type="HBoxContainer" parent="UI"]
+layout_mode = 2
+
+[node name="LeftScoreLabel" type="Label" parent="UI/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "1"
+label_settings = SubResource("LabelSettings_gcxh1")
+
+[node name="RightScoreLabel" type="Label" parent="UI/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+text = "1"
+label_settings = SubResource("LabelSettings_1yqlr")
+
+[node name="UpperWall" type="StaticBody2D" parent="."]
+position = Vector2(640, 0)
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="UpperWall"]
+shape = SubResource("WorldBoundaryShape2D_hq1uo")
+
+[node name="LowerWall" type="StaticBody2D" parent="."]
+position = Vector2(640, 720)
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LowerWall"]
+shape = SubResource("WorldBoundaryShape2D_0lcdv")
+
+[node name="LeftGoal" type="Area2D" parent="."]
+position = Vector2(-48, 360)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftGoal"]
+shape = SubResource("WorldBoundaryShape2D_0uv66")
+
+[node name="RightGoal" type="Area2D" parent="."]
+position = Vector2(1328, 360)
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightGoal"]
+shape = SubResource("WorldBoundaryShape2D_mcwk0")
+
+[node name="Player" parent="." instance=ExtResource("2_spe5x")]
+z_index = 9
+position = Vector2(75, 360)
+
+[node name="Opponent" parent="." instance=ExtResource("4_jr8oo")]
+position = Vector2(1184, 368)
+acceleration = 6000.0
+friction = 6000.0
+prediction_time = 1.0
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_bfelm")
+volume_db = -5.0

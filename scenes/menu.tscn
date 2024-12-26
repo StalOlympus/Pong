@@ -1,0 +1,76 @@
+[gd_scene load_steps=8 format=3 uid="uid://bm6cc21d0f3yd"]
+
+[ext_resource type="Script" path="res://scripts/menu.gd" id="1_pfcnk"]
+[ext_resource type="PackedScene" uid="uid://85or8s2s5j1f" path="res://scenes/main.tscn" id="2_6xwt6"]
+[ext_resource type="Shader" path="res://scenes/bg.gdshader" id="3_mweof"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_va568"]
+shader = ExtResource("3_mweof")
+shader_parameter/dark_color = Color(0.0823529, 0.0666667, 0.129412, 1)
+shader_parameter/accent_color = Color(0.123735, 0.103405, 0.184802, 1)
+shader_parameter/vignette_intensity = 0.4
+shader_parameter/vignette_opacity = 0.5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yawoh"]
+bg_color = Color(0.198559, 0.221083, 0.258616, 0.694118)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+shadow_color = Color(0, 0, 0, 0.517647)
+shadow_size = 1
+shadow_offset = Vector2(1, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7gmig"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vacrw"]
+
+[node name="Menu" type="CanvasLayer" node_paths=PackedStringArray("start_button", "exit_button")]
+script = ExtResource("1_pfcnk")
+start_button = NodePath("PanelContainer/MarginContainer/VBoxContainer/StartButton")
+exit_button = NodePath("PanelContainer/MarginContainer/VBoxContainer/ExitButton")
+main_scene = ExtResource("2_6xwt6")
+
+[node name="Background" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_va568")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0823529, 0.0666667, 0.129412, 1)
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -96.0
+offset_top = -63.0
+offset_right = 96.0
+offset_bottom = 64.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_yawoh")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 48
+theme_override_constants/margin_top = 48
+theme_override_constants/margin_right = 48
+theme_override_constants/margin_bottom = 48
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="StartButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_7gmig")
+text = "Start"
+
+[node name="ExitButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/focus = SubResource("StyleBoxEmpty_vacrw")
+text = "Exit"
